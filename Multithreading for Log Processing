@@ -1,0 +1,25 @@
+import concurrent.futures
+from datetime import datetime
+
+def process_line(line):
+    try:
+        # Process the line and return the result
+        datetime_utc, info = process_general_line(line)
+        if datetime_utc is None or info is None:
+            return "Line skipped or processed with errors"
+        return "Line processed successfully"
+    except Exception as e:
+        return f"Error processing line: {str(e)}"
+
+def main():
+    with open("your_log_file.log", "r") as file:
+        lines = file.readlines()
+    
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = list(executor.map(process_line, lines))
+    
+    for result in results:
+        print(result)
+
+if __name__ == "__main__":
+    main()
